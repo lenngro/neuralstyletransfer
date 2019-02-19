@@ -87,4 +87,4 @@ for i in range(iterations):
 
     iteration_count += 1
 
-save(best_img, directory)
+model.viewer.save(best_img, directory)
