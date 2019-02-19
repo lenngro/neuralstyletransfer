@@ -2,7 +2,6 @@ import time
 from PIL import Image
 import numpy as np
 import tensorflow as tf
-from tensorflow.contrib.eager.python import tfe
 from model.Model import Model
 import os, errno
 import datetime
@@ -90,12 +89,6 @@ cfg = {
     'content_features': content_features
 }
 
-num_rows = 2
-num_cols = 5
-display_interval = num_iterations / (num_rows * num_cols)
-start_time = time.time()
-global_start = time.time()
-
 norm_means = np.array([103.939, 116.779, 123.68])
 min_vals = -norm_means
 max_vals = 255 - norm_means
@@ -109,7 +102,6 @@ for i in range(num_iterations):
     optimizer.apply_gradients([(grads, content_init_image)])
     clipped = tf.clip_by_value(content_init_image, min_vals, max_vals)
     content_init_image.assign(clipped)
-    end_time = time.time()
 
     if best_loss is None:
         best_loss = loss
