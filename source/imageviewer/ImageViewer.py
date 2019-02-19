@@ -25,5 +25,3 @@ class ImageViewer(object):
         if title is not None:
             plt.title(title)
         plt.imshow(out)
-
-

@@ -1,9 +1,11 @@
 import time
-
+from PIL import Image
 import numpy as np
 import tensorflow as tf
 from tensorflow.contrib.eager.python import tfe
 from model.Model import Model
+import os, errno
+import datetime
 
 """
 NEURAL STYLE TRANSFER IMPLEMENTATION
@@ -14,15 +16,19 @@ Enable Tensorflow's eager execution mode.
 """
 tf.enable_eager_execution()
 
-
 """
 If no or falsy command-line arguments were given, use defaults.
 """
-content_path = "content_images/content.jpeg"
-style_path = "style_images/style.jpg"
-num_iterations = 1000
+content_path = "content_images/content_1.jpg"
+style_path = "style_images/picasso.png"
+num_iterations = 750
 content_weight = 1e3
 style_weight = 1e-2
+
+
+def save(img, directory):
+    img = Image.fromarray(img, 'RGB')
+    img.save(directory + '/transfered.png')
 
 
 def deprocess_img(processed_img):
@@ -43,6 +49,18 @@ def deprocess_img(processed_img):
     x = np.clip(x, 0, 255).astype('uint8')
     return x
 
+
+"""
+Ensure directory exists or can be created before starting the transfer.
+"""
+
+directory = 'result/' + 'transfer_' + str(datetime.datetime.utcnow())
+
+try:
+    os.makedirs(directory)
+except OSError as e:
+    if e.errno != errno.EEXIST:
+        raise
 
 """
 Create the model.
@@ -106,4 +124,5 @@ for i in range(num_iterations):
         print("Loss: " + str(loss))
 
     iteration_count += 1
-model.viewer.imshow(best_img)
+
+save(best_img, directory)
