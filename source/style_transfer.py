@@ -5,9 +5,14 @@ import tensorflow as tf
 from model.Model import Model
 import os, errno
 import datetime
+from command_line_parser.CommandLineParser import CommandLineParser
 
 """
 NEURAL STYLE TRANSFER IMPLEMENTATION
+
+Sample Use:
+python style_transfer.py -cp "content_images/content_1.jpg" -sp "style_images/picasso.png" -i 100 -cw 0.001 -sw 0.0001 -w 1024
+
 """
 
 """
@@ -15,43 +20,8 @@ Enable Tensorflow's eager execution mode.
 """
 tf.enable_eager_execution()
 
-"""
-If no or falsy command-line arguments were given, use defaults.
-"""
-content_path = "content_images/content_1.jpg"
-style_path = "style_images/picasso.png"
-num_iterations = 750
-content_weight = 1e3
-style_weight = 1e-2
-
-
-def save(img, directory):
-    img = Image.fromarray(img, 'RGB')
-    img.save(directory + '/transfered.png')
-
-
-def deprocess_img(processed_img):
-    x = processed_img.copy()
-    if len(x.shape) == 4:
-        x = np.squeeze(x, 0)
-    assert len(x.shape) == 3, ("Input to deprocess image must be an image of "
-                               "dimension [1, height, width, channel] or [height, width, channel]")
-    if len(x.shape) != 3:
-        raise ValueError("Invalid input to deprocessing image")
-
-    # perform the inverse of the preprocessiing step
-    x[:, :, 0] += 103.939
-    x[:, :, 1] += 116.779
-    x[:, :, 2] += 123.68
-    x = x[:, :, ::-1]
-
-    x = np.clip(x, 0, 255).astype('uint8')
-    return x
-
-
-"""
-Ensure directory exists or can be created before starting the transfer.
-"""
+parser = CommandLineParser()
+content_path, style_path, iterations, content_weight, style_weight, target_image_width = parser.parse()
 
 directory = 'result/' + 'transfer_' + str(datetime.datetime.utcnow())
 
@@ -65,7 +35,7 @@ except OSError as e:
 Create the model.
 """
 
-model = Model()
+model = Model(target_image_width)
 for layer in model.model.layers:
     layer.trainable = False
 
@@ -95,7 +65,7 @@ max_vals = 255 - norm_means
 
 imgs = []
 
-for i in range(num_iterations):
+for i in range(iterations):
     grads, all_loss = model.compute_grads(cfg)
     loss, style_score, content_score = all_loss
 
@@ -109,7 +79,7 @@ for i in range(num_iterations):
 
     if loss < best_loss:
         best_loss = loss
-        best_img = deprocess_img(content_init_image.numpy())
+        best_img = model.viewer.deprocess_img(content_init_image.numpy())
 
     if iteration_count % 10 == 0:
         print("Iteration: " + str(iteration_count))

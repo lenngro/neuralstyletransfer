@@ -1,28 +1,26 @@
 from tensorflow.python.keras import models
-from imageviewer.ImageViewer import ImageViewer
+from image_viewer.ImageViewer import ImageViewer
 import tensorflow as tf
-
-"""
-The general net structure. Determines which exact layers of the VGG-19 are going to be used.
-"""
-
-content_layers = ['block5_conv2']
-
-style_layers = ['block1_conv1',
-                'block2_conv1',
-                'block3_conv1',
-                'block4_conv1',
-                'block5_conv1'
-                ]
-
-num_content_layers = len(content_layers)
-num_style_layers = len(style_layers)
-
 
 class Model(object):
 
-    def __init__(self):
-        self.viewer = ImageViewer()
+    def __init__(self, image_width):
+        """
+        The general net structure. Determines which exact layers of the VGG-19 are going to be used.
+        """
+        self.viewer = ImageViewer(image_width)
+        self.content_layers = [
+            'block5_conv2'
+        ]
+        self.style_layers = [
+            'block1_conv1',
+            'block2_conv1',
+            'block3_conv1',
+            'block4_conv1',
+            'block5_conv1'
+        ]
+        self.num_content_layers = len(self.content_layers)
+        self.num_style_layers = len(self.style_layers)
         self.model = self.create()
 
     def create(self):
@@ -36,8 +34,8 @@ class Model(object):
         """
         vgg = tf.keras.applications.vgg19.VGG19(include_top=False, weights='imagenet')
         vgg.trainable = False
-        style_outputs = [vgg.get_layer(name).output for name in style_layers]
-        content_outputs = [vgg.get_layer(name).output for name in content_layers]
+        style_outputs = [vgg.get_layer(name).output for name in self.style_layers]
+        content_outputs = [vgg.get_layer(name).output for name in self.content_layers]
         model_outputs = style_outputs + content_outputs
         return models.Model(vgg.input, model_outputs)
 
@@ -48,6 +46,7 @@ class Model(object):
         :return: transformed image
         """
         img = self.viewer.load_img(path_to_img)
+        self.viewer.imshow(img)
         img = tf.keras.applications.vgg19.preprocess_input(img)
         return img
 
@@ -102,8 +101,8 @@ class Model(object):
         style_image = self.load_and_process_img(style_path)
         style_outputs = self.model(style_image)
         content_outputs = self.model(content_image)
-        style_features = [style_layer[0] for style_layer in style_outputs[:num_style_layers]]
-        content_features = [content_layer[0] for content_layer in content_outputs[num_style_layers:]]
+        style_features = [style_layer[0] for style_layer in style_outputs[:self.num_style_layers]]
+        content_features = [content_layer[0] for content_layer in content_outputs[self.num_style_layers:]]
         return style_features, content_features
 
     def compute_loss(self, model, loss_weights, init_image, gram_style_features, content_features):
@@ -121,17 +120,17 @@ class Model(object):
         style_weight, content_weight = loss_weights
         model_outputs = self.model(init_image)
 
-        style_output_features = model_outputs[:num_style_layers]
-        content_output_features = model_outputs[num_style_layers:]
+        style_output_features = model_outputs[:self.num_style_layers]
+        content_output_features = model_outputs[self.num_style_layers:]
 
         style_score = 0
         content_score = 0
-        weight_per_style_layer = 1.0 / float(num_style_layers)
+        weight_per_style_layer = 1.0 / float(self.num_style_layers)
 
         for target_style, comb_style in zip(gram_style_features, style_output_features):
             style_score += weight_per_style_layer * self.get_style_loss(comb_style[0], target_style)
 
-        weight_per_content_layer = 1.0 / float(num_content_layers)
+        weight_per_content_layer = 1.0 / float(self.num_content_layers)
         for target_content, comb_content in zip(content_features, content_output_features):
             content_score += weight_per_content_layer * self.get_content_loss(comb_content[0], target_content)
 
