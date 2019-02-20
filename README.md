@@ -21,3 +21,6 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Sample Usage
 `python style_transfer.py -cp "content_images/content_1.jpg" -sp "style_images/picasso.png" -i 1000 -cw 10 -sw 0.0001 -w 1024`
+
+## Usage
+TBC
