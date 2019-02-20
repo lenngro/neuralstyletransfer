@@ -6,6 +6,7 @@ from model.Model import Model
 import os, errno
 import datetime
 from command_line_parser.CommandLineParser import CommandLineParser
+tf.enable_eager_execution()
 
 """
 NEURAL STYLE TRANSFER IMPLEMENTATION
@@ -15,21 +16,21 @@ python style_transfer.py -cp "content_images/content_1.jpg" -sp "style_images/pi
 
 """
 
-"""
-Enable Tensorflow's eager execution mode.
-"""
-tf.enable_eager_execution()
+def ensure_dir():
+    """
+    Ensure the directory exists or is creatable.
+    :return:
+    """
+    directory = 'result/' + 'transfer_' + str(datetime.datetime.utcnow())
+
+    try:
+        os.makedirs(directory)
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
 
 parser = CommandLineParser()
 content_path, style_path, iterations, content_weight, style_weight, target_image_width = parser.parse()
-
-directory = 'result/' + 'transfer_' + str(datetime.datetime.utcnow())
-
-try:
-    os.makedirs(directory)
-except OSError as e:
-    if e.errno != errno.EEXIST:
-        raise
 
 """
 Create the model.
