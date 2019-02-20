@@ -18,3 +18,6 @@ Pip (Python Package Manager)
 2. cd neuralstyletransfer
 3. activate your virtual environment (optional)
 4. pip install -r requirements.txt
+
+### Sample Usage
+python style_transfer.py -cp "content_images/content_1.jpg" -sp "style_images/picasso.png" -i 1000 -cw 10 -sw 0.0001 -w 1024
