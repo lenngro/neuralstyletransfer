@@ -1,6 +1,6 @@
+import tensorflow as tf
 from tensorflow.python.keras import models
 from source.image_viewer.ImageViewer import ImageViewer
-import tensorflow as tf
 
 class Model(object):
 

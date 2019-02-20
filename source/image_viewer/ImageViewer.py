@@ -1,23 +1,16 @@
-from PIL import Image
 import matplotlib.pyplot as plt
 import numpy as np
-from tensorflow.python.keras.preprocessing import image as kp_image
 import tensorflow as tf
-"""
-
-basewidth = 300
-img = Image.open('somepic.jpg')
-wpercent = (basewidth/float(img.size[0]))
-hsize = int((float(img.size[1])*float(wpercent)))
-img = img.resize((basewidth,hsize), Image.ANTIALIAS)
-img.save('sompic.jpg') 
-
-"""
-
+from tensorflow.python.keras.preprocessing import image as kp_image
+from PIL import Image
 
 class ImageViewer(object):
 
     def __init__(self, image_width):
+        """
+        Initialize the image viewer.
+        :param image_width: target image width
+        """
         self.image_width = image_width
 
     def load_img(self, path_to_img):
@@ -35,6 +28,12 @@ class ImageViewer(object):
         return img
 
     def show(self, img, title=None):
+        """
+        Display image.
+        :param img: image to be displayed
+        :param title: name that will be shown above the figure
+        :return:
+        """
         out = np.squeeze(img, axis=0)
         out = out.astype('uint8')
         plt.imshow(out)
@@ -45,6 +44,7 @@ class ImageViewer(object):
     def save(self, img, directory, name):
         """
         Saves an image to disk.
+        First, ensure the image has the correct shape and revert the zero-centering.
         :param img: image
         :param directory: directory where the image will be stored
         :param name: name of the file (without file format)
@@ -63,6 +63,12 @@ class ImageViewer(object):
         img.save(directory + '/' + name + '.png')
 
     def process_img(self, img):
+        """
+        The VGG-19 net expects images to be zero-centered.
+        Therefore a transformation is needed.
+        :param img: image to be transformed
+        :return: transformed image
+        """
         norm_means = np.array([103.939, 116.779, 123.68])
         min_vals = -norm_means
         max_vals = 255 - norm_means
