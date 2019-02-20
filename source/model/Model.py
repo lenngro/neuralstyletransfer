@@ -143,6 +143,7 @@ class Model(object):
     def compute_gradients(self, configuration):
         """
         Compute the gradients.
+        compute_loss(**configuration) passes the "content" of configuration instead of the entire object.
         :param cfg: config of the style transfer
         :return: gradients
         """

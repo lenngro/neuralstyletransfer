@@ -1,7 +1,6 @@
 """
 -----------------------------
 ## Neural Style Transfer ##
-@author: Lennart Grosser
 -----------------------------
 Sample Use:
 python style_transfer.py -cp "content_images/content_1.jpg" -sp "style_images/picasso.png" -i 100 -cw 0.001 -sw 0.0001 -w 1024
