@@ -9,8 +9,8 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-Python 3.7
-Pip (Python Package Manager)
+- Python 3.7
+- Pip (Python Package Manager)
 
 ### Installing
 
