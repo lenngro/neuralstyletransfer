@@ -2,7 +2,7 @@ from PIL import Image
 import matplotlib.pyplot as plt
 import numpy as np
 from tensorflow.python.keras.preprocessing import image as kp_image
-
+import tensorflow as tf
 """
 
 basewidth = 300
@@ -34,7 +34,7 @@ class ImageViewer(object):
         img = np.expand_dims(img, axis=0)
         return img
 
-    def imshow(self, img, title=None):
+    def show(self, img, title=None):
         out = np.squeeze(img, axis=0)
         out = out.astype('uint8')
         plt.imshow(out)
@@ -43,23 +43,28 @@ class ImageViewer(object):
         plt.imshow(out)
 
     def save(self, img, directory, name):
+        """
+        Saves an image to disk.
+        :param img: image
+        :param directory: directory where the image will be stored
+        :param name: name of the file (without file format)
+        :return:
+        """
+        if len(img.shape) == 4:
+            img = np.squeeze(img, 0)
+            assert len(img.shape) == 3
+
+        img[:, :, 0] += 103.939
+        img[:, :, 1] += 116.779
+        img[:, :, 2] += 123.68
+        img = img[:, :, ::-1]
+        img = np.clip(img, 0, 255).astype('uint8')
         img = Image.fromarray(img, 'RGB')
         img.save(directory + '/' + name + '.png')
 
-    def deprocess_img(self, processed_img):
-        x = processed_img.copy()
-        if len(x.shape) == 4:
-            x = np.squeeze(x, 0)
-        assert len(x.shape) == 3, ("Input to deprocess image must be an image of "
-                                   "dimension [1, height, width, channel] or [height, width, channel]")
-        if len(x.shape) != 3:
-            raise ValueError("Invalid input to deprocessing image")
-
-        # perform the inverse of the preprocessiing step
-        x[:, :, 0] += 103.939
-        x[:, :, 1] += 116.779
-        x[:, :, 2] += 123.68
-        x = x[:, :, ::-1]
-
-        x = np.clip(x, 0, 255).astype('uint8')
-        return x
+    def process_img(self, img):
+        norm_means = np.array([103.939, 116.779, 123.68])
+        min_vals = -norm_means
+        max_vals = 255 - norm_means
+        clipped = tf.clip_by_value(img, min_vals, max_vals)
+        return img.assign(clipped)

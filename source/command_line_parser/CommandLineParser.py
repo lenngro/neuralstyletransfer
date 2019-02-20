@@ -30,7 +30,8 @@ class CommandLineParser(object):
                 args.contentweight,
                 args.styleweight,
                 args.imagewidth
-            ))
+                )
+        )
 
         if args.contentpath is None:
             raise TypeError
@@ -62,5 +63,4 @@ class CommandLineParser(object):
         else:
             target_args["target_image_width"] = int(args.imagewidth)
 
-        print(target_args)
         return target_args.values()

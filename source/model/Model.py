@@ -1,5 +1,5 @@
 from tensorflow.python.keras import models
-from image_viewer.ImageViewer import ImageViewer
+from source.image_viewer.ImageViewer import ImageViewer
 import tensorflow as tf
 
 class Model(object):
@@ -46,7 +46,7 @@ class Model(object):
         :return: transformed image
         """
         img = self.viewer.load_img(path_to_img)
-        self.viewer.imshow(img)
+        self.viewer.show(img)
         img = tf.keras.applications.vgg19.preprocess_input(img)
         return img
 
@@ -105,7 +105,7 @@ class Model(object):
         content_features = [content_layer[0] for content_layer in content_outputs[self.num_style_layers:]]
         return style_features, content_features
 
-    def compute_loss(self, model, loss_weights, init_image, gram_style_features, content_features):
+    def compute_loss(self, loss_weights, target_image, gram_style_features, content_features):
         """
         To compute the overall loss (how far the model is from recreating both content and style in the target image),
         we compute the style- and content loss for each layer separately and simply add them up.
@@ -118,7 +118,7 @@ class Model(object):
         :return: overall loss
         """
         style_weight, content_weight = loss_weights
-        model_outputs = self.model(init_image)
+        model_outputs = self.model(target_image)
 
         style_output_features = model_outputs[:self.num_style_layers]
         content_output_features = model_outputs[self.num_style_layers:]
@@ -140,13 +140,13 @@ class Model(object):
         loss = style_score + content_score
         return loss, style_score, content_score
 
-    def compute_grads(self, cfg):
+    def compute_gradients(self, configuration):
         """
         Compute the gradients.
         :param cfg: config of the style transfer
         :return: gradients
         """
         with tf.GradientTape() as tape:
-            all_loss = self.compute_loss(**cfg)
+            all_loss = self.compute_loss(**configuration)
         total_loss = all_loss[0]
-        return tape.gradient(total_loss, cfg['init_image']), all_loss
+        return tape.gradient(total_loss, configuration['target_image']), all_loss
