@@ -53,7 +53,7 @@ The program accepts the following command line arguments:
 
 `-sw`
 `--styleweight`
--The weight of the style when transfering. Accordingly to the content weight it is advised to weight the style less than the content in order to be able to recognize the content in the result.
+- The weight of the style when transfering. Accordingly to the content weight it is advised to weight the style less than the content in order to be able to recognize the content in the result.
 - Default: 0.01
 
 `-w`
