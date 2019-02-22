@@ -3,6 +3,16 @@
 Implementation of Gaty's et. al. approach to image style transfer using Convolutional Neural Networks. The project
 aims to transfer the style of one image onto the content of another image.
 
+Original paper:
+"Image Style Transfer Using Convolutional Neural Networks"
+- Leon Gatys
+- Alexander Ecker
+- Matthias Bethge
+
+Arxiv Link:
+
+https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Gatys_Image_Style_Transfer_CVPR_2016_paper.pdf
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
