@@ -27,14 +27,17 @@ The program accepts the following command line arguments:
 
 `-cp`
 `--contentpath`
-The (relative) path to the image that's supposed to be used for the content recreation. 
-When no value is provided, program raises an error.
-Example "content_images/content_1.jpg"
+- The (relative) path to the image that's supposed to be used for the content recreation. 
+- When no value is provided, program raises an error.
+- Example "content_images/content_1.jpg"
+- or "/home/user/images/image1.png"
 
 `-sp`
 `--stylepath`
 The (relative) path to the image that's supposed to be used for the style recreation.
 When no value is provided, program raises an error.
+- Example "style_images/picasso.png"
+- or "/home/user/images/image2.png"
 
 `-i`
 `--iterations`
