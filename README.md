@@ -73,7 +73,7 @@ The program accepts the following command line arguments:
 Gatys et. al. approach to image style transfer aims to do the following: Given two images, extract the content (what is seen) of one image and the style (how is it visualised) of the other image and merge both extractions in another image. Thus a style transfer from one image to another is achieved.
 
 ### Approach
-To extract content and style from images, we can use a pre-trained model. The VGG-19 is a neural network that is successfully trained for object localization and classification. Once can feed an image into the network and use it's layers' outputs to extract style and content.
+To extract content and style from images, we can use a pre-trained model. The VGG-19 is a neural network that is successfully trained for object localization and classification. One can feed an image into the network and use it's layers' outputs to extract style and content.
 
 This is just a rough sketch of what's happening. For more information, please have a look at the original paper.
 
@@ -81,12 +81,12 @@ This is just a rough sketch of what's happening. For more information, please ha
 The content of the first reference image is extracted by considering the outputs of each layer in the VGG-19 net. When the reference image is fed into the network, it's layers compute their outcome. If we now optimize (thus repeatedly change) a target image until it's activations match those of the reference image when passed into the VGG-19, we are able to visualize the contents in an image.
 
 #### Style Extraction
-The style if the second reference image can be extracted by considering the correlation of the activations of the VGG-19' layers. The correlation of activations is modelled as their' Gramian matrix. 
+The style of the second reference image can be extracted by considering the correlation of the activations of the VGG-19' layers. The correlation of activations is modelled as their' Gramian matrix. 
 - https://en.wikipedia.org/wiki/Gramian_matrix
 If we now change a target image until the correlations of it's activations match the correlation of the activations of the style reference image, we are able to visualize the style of the reference image.
 
 #### Actual Style Transfer
-The actual style transfer is a combination of content and style extraction. A target image is repeatedly changed using an optimization method until both it's content activations and it's style correlation match those of the two reference image.
+The actual style transfer is a combination of content and style extraction. A target image is repeatedly changed using an optimization method until both it's content activations and it's style correlation match those of the two reference images.
 Thus we minimize a combined loss indicating the "distance" to content and style represenations, respectively.
 
 
