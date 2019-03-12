@@ -10,8 +10,8 @@ import tensorflow as tf
 import numpy as np
 import os, errno
 import datetime
-from source.model.Model import Model
-from source.command_line_parser.CommandLineParser import CommandLineParser
+from source.Model.Model import Model
+from source.CommandLineParser.CommandLineParser import CommandLineParser
 tf.enable_eager_execution()
 
 
