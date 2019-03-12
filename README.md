@@ -28,7 +28,7 @@ These instructions will get you a copy of the project up and running on your loc
 4. pip install -r requirements.txt
 
 ### Sample Usage
-`python style_transfer.py -cp "content_images/content_1.jpg" -sp "style_images/picasso.png" -i 1000 -cw 10 -sw 0.0001 -w 1024`
+`python style_transfer.py -cp "content_images/beach.jpg" -sp "style_images/picasso.png" -i 1000 -cw 10 -sw 0.0001 -w 1024`
 
 ## Usage
 The program accepts the following command line arguments:
